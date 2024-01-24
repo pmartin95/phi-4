@@ -16,8 +16,15 @@ set(OBJ_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/obj)
 # Include directories
 include_directories(include)
 
+# Enable testing
+enable_testing()
+
 # Can manually add the sources using the set command as follows:
 # set(SOURCES src/main.cpp src/otherfile.cpp)
+
+# Add Google Test
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
 
 # However, the file(GLOB...) allows for wildcard additions:
 file(GLOB SOURCES "src/*.cpp")
@@ -25,9 +32,16 @@ file(GLOB SOURCES "src/*.cpp")
 # Add executable
 add_executable(Phi4Model ${SOURCES})
 
+# Add executable for tests
+file(GLOB TEST_SOURCES "tests/*.cpp" "src/lattice.cpp")
+add_executable(runTests ${TEST_SOURCES})
+
 # Set the location for library installation
 install(TARGETS Phi4Model DESTINATION ${OBJ_OUTPUT_PATH})
 
 # If you have any external libraries to include, you can use the following commands
 # find_package(ExternalLib REQUIRED)
 # target_link_libraries(Phi4Model ExternalLib)
+
+# Link against Google Test and your project's library
+target_link_libraries(runTests ${GTEST_LIBRARIES} pthread)
