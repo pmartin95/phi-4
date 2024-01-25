@@ -47,3 +47,41 @@ std::vector<int> lattice::getCoordinates(int linearIndex) const
 
     return coords;
 }
+
+// Definitions of setters
+void lattice::setLatticeDimensions(const std::vector<int> &newDimensions)
+{
+    latticeDimensions = newDimensions;
+    calculateNumSites();
+    sites.resize(numSites);
+    momenta.resize(numSites);
+}
+
+void lattice::setSiteValue(int index, double value)
+{
+    if (index >= 0 && index < sites.size())
+    {
+        sites[index] = value;
+    }
+    // Optionally handle out-of-range index
+}
+
+void lattice::setMomentumValue(int index, double value)
+{
+    if (index >= 0 && index < momenta.size())
+    {
+        momenta[index] = value;
+    }
+    // Optionally handle out-of-range index
+}
+
+// Calculations
+double lattice::calcAvePhiSquare() const
+{
+    double phiSquare = 0.0;
+    for (double x : sites)
+    {
+        phiSquare += x * x;
+    }
+    return phiSquare / numSites;
+}
