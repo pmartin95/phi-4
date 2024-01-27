@@ -10,8 +10,6 @@ private:
     std::vector<double> momenta; // This will act as auxilliary momenta for hybrid monte carlo
     int numSites;
 
-    void calculateNumSites();
-
 public:
     lattice(/* args */);
     lattice(const std::vector<int> &dimensions);
@@ -65,7 +63,28 @@ public:
     void setLatticeDimensions(const std::vector<int> &newDimensions);
     void setSiteValue(int index, double value);
     void setMomentumValue(int index, double value);
+    void calculateNumSites();
 
-    // Calculations
-    double calcAvePhiSquare() const;
+    // Calculations; this allows me to use Lambda functions
+    template <typename Func>
+    void forEachSite(Func f) const
+    {
+        for (const auto &site : sites)
+        {
+            f(site);
+        }
+    }
+    template <typename Func, typename BC>
+    void forEachSiteWithShifts(Func f, BC bc, const std::vector<std::vector<int>> &shifts) const
+    {
+        for (int i = 0; i < getNumSites(); ++i)
+        {
+            std::vector<double> values;
+            for (const auto &shift : shifts)
+            {
+                values.push_back(bc(*(this), i, shift));
+            }
+            f(values);
+        }
+    }
 };
